@@ -1,10 +1,8 @@
 package egg.tinderMascotas.Controladores;
 
-import java.util.logging.Level;
-
-import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,18 +34,23 @@ public class PortalControlador {
 	}
 
 	@PostMapping("/register")
-	public String registrar(@RequestParam String nombre, @RequestParam String apellido, @RequestParam String mail,
+	public String registrar(ModelMap modelo, @RequestParam String nombre, @RequestParam String apellido, @RequestParam String mail,
 			@RequestParam String clave1, @RequestParam String clave2) {
-
+		
 		try {
 			serviciosUsuario.registrar(null, nombre, apellido, mail, clave1);
 		} catch (ErrorServicio e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			modelo.put("error", e.getMessage());
+			modelo.put("nombre", nombre);
+			modelo.put("apellido", apellido);
+			modelo.put("mail", mail);
+			modelo.put("clave1", clave1);
+			modelo.put("clave2", clave2);
 			return "registro.html";
 		}
-
-		return "index.html";
+		modelo.put("titulo", "Bienvenido a Tinder de Mascotas");
+		modelo.put("descripcion", "Tu usuario fue registrado de manera satisfactoria");
+		return "exito.html";
 	}
 
 }
